@@ -5,6 +5,7 @@ The script only works for linux systems
 ## Usage
 
 ```sh
-chmod +x setup-github-actions-runner.sh
-./setup-github-actions-runner.sh --github-token <token-provided-by-github> --runnner-name simple-runner
+curl -O https://raw.githubusercontent.com/rabilrbl/GitHub-Actions-Runner-Setup/master/install.sh 
+chmod +x install.sh
+./install.sh --github-token <token-provided-by-github> --username rabilrbl
 ```

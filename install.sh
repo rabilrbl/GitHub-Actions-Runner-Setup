@@ -1,13 +1,38 @@
 #!/bin/bash
 
+# This script checks if jq is installed and if not, installs it using the respective distro package manager
+
+# define distro variables 
+debian="debian"
+ubuntu="ubuntu"
+fedora="fedora"
+centos="centos"
+redhat="redhat"
+
+# detect the distro
+distro=`cat /etc/os-release | grep -w ID | cut -d\" -f2`
+
+# check if jq is installed
+jq --version > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+     echo -e "jq is already installed!\n"
+else
+    echo -e "jq is not installed. Installing now...\n"
+    # install jq according to the distro
+    case $distro in
+        $debian|$ubuntu) sudo apt-get install -y jq ;;
+        $fedora|$centos|$redhat) sudo yum install -y jq ;;
+    esac
+fi
+
 # This script will setup a self-hosted GitHub Actions runner
 
 if [ "$#" -ne 4 ]; then
-    echo "Error: GITHUB_TOKEN and RUNNER_NAME required"
+    echo "Error: GITHUB_TOKEN and USERNAME required"
     echo "Usage: "
     echo "--github-token or -gt : Token provided by github when registering for actions"
-    echo "--runner-name or -rn : Any name to identify runner"
-    echo "./install.sh --github-token <GITHUB_TOKEN> --runner-name <RUNNER_NAME>"
+    echo "--username or -u : GitHub username or organization username"
+    echo "./install.sh --github-token <GITHUB_TOKEN> --username <USERNAME>"
     exit 1
 fi
  
@@ -16,8 +41,8 @@ while [ "$1" != "" ]; do
         -gt | --github-token )  shift
                                 GITHUB_TOKEN=$1
                                 ;;
-        -rn | --runner-name )   shift
-                                RUNNER_NAME=$1
+        -u | --username )   shift
+                                USERNAME=$1
                                 ;;
     esac
     shift
@@ -54,9 +79,9 @@ cd ./actions-runner-*-linux-x64
 
 # Configure the runner
 echo "Configuring the runner"
-./config.sh --url https://github.com --token $GITHUB_TOKEN --name $RUNNER_NAME
+./config.sh --url https://github.com/$USERNAME --token $GITHUB_TOKEN
 
 # Start the runner
 echo "Starting the runner"
-sudo nohup ./run.sh & >> runner.log &
+sudo nohup ./run.sh >> runner.log &
 
