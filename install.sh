@@ -7,7 +7,7 @@ if [ "$#" -ne 4 ]; then
     echo "Usage: "
     echo "--github-token or -gt : Token provided by github when registering for actions"
     echo "--runner-name or -rn : Any name to identify runner"
-    echo "./setup-github-actions-runner.sh --github-token <GITHUB_TOKEN> --runner-name <RUNNER_NAME>"
+    echo "./install.sh --github-token <GITHUB_TOKEN> --runner-name <RUNNER_NAME>"
     exit 1
 fi
  
